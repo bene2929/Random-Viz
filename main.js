@@ -63,7 +63,7 @@ function updateGraph() {
         .enter().append("g")
         .attr("transform", function (d, i) {
             cnt += d.count;
-            return "translate(0," + i * diff + ")";
+            return "translate("+pad_left+"," + i * diff + ")";
         });
     bar.append("rect")
         .attr("width", function (d) {
