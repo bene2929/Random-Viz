@@ -5,14 +5,14 @@ var total_results = 0;
 var tree = new Prob_Node();
 var boxHeight = 400;
 var boxWidth = 1000;
-var timer;
+var timer_tree;
 var tree_d3 = null;
 function Prob_Node(parent) {
     this.result_text = null;
     this.results = 0;
     this.children = null;
     this.probability_n = 0;
-    this.probability_z = 0;
+    this.probability_z = 1;
     this.parent_i = parent;
     this.svg_element = null;
     this.addChild = function () {
@@ -33,9 +33,7 @@ function Prob_Node(parent) {
         }
     };
     this.updateResultText = function () {
-        if (this.svg_element) {
-            // this.svg_element.select(".plus").this.svg_element.select
-        }
+        rearrange_tip();
         if (this.result_text) {
             var text = "";
             var totalPerc = this.totalPerc();
@@ -90,7 +88,7 @@ function Prob_Node(parent) {
 
     this.change_z = function (cnt, text_element, error_display) {
         var new_z = cnt + this.probability_z;
-        if ((new_z > 0 && new_z <= this.parent_i.children.length)) {
+        if ((new_z > 0 && new_z <= this.probability_n)) {
             this.probability_z = new_z;
             if (text_element) {
                 text_element.text(this.probability_z);
@@ -189,7 +187,7 @@ function buildNode(root) {
         });
     node.append("circle")
         .attr("r", calculateRadius)
-        .attr("class","prob_circle");//function(d) { return d.data.level; });
+        .attr("class", "prob_circle");//function(d) { return d.data.level; });
 
 
     addButtonsToElement(node, function (e, val) {
@@ -338,23 +336,37 @@ function scaleH(percent) {
 }
 function startSpinner_tree() {
 
-    if (timer) {
-        clearInterval(timer);
+    if (timer_tree) {
+        clearInterval(timer_tree);
     }
     if (started) {
         var timesetting = 1000.0 / $("#i_per_s_tree").spinner("value");
         if (timesetting < 10) {
 
-            timer = setInterval(function () {
+            timer_tree = setInterval(function () {
                 for (var i = 0; i < (10 / timesetting); i++) {
                     next_experiment_tree();
                 }
             }, 10);
         } else {
 
-            timer = setInterval(next_experiment_tree, timesetting);
+            timer_tree = setInterval(next_experiment_tree, timesetting);
         }
     }
+}
+function rearrange_tip() {
+
+    var node = d3.selectAll(".node");
+    node.selectAll(".plus").attr("x", function (d) {
+        return scaleW(2.5) + (calculateRadius(d)) - 15;
+    });
+
+    node.selectAll(".minus").attr("x", function (d) {
+        return scaleW(-2.5) - ( (calculateRadius(d)) - 15);
+    });
+    node.selectAll(".prob_display").attr("y", function (d) {
+        return scaleH(2.5) + (calculateRadius(d)) + 5;
+    });
 }
 function next_experiment_tree() {
     tree.doExperiment();
@@ -363,18 +375,8 @@ function next_experiment_tree() {
     var t = d3.transition()
         .duration(500)
         .ease(d3.easeLinear);
-    var node=d3.selectAll(".node");
+    var node = d3.selectAll(".node");
     node.interrupt(t).selectAll("circle").transition(t).attr("r", calculateRadius);
-
-    node.selectAll(".plus").attr("x", function (d) {
-       return scaleW(2.5) + (calculateRadius(d))-15;
-    });
-
-    node.selectAll(".minus").attr("x", function (d) {
-        return scaleW(-2.5) -( (calculateRadius(d))-15);
-    });
-    node.selectAll(".prob_display").attr("y", function (d) {
-        return scaleH(2.5) +  (calculateRadius(d))+5;
-    });
+    rearrange_tip();
 
 }

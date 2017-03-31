@@ -129,6 +129,17 @@ function startSpinner() {
         clearInterval(timer);
     }
     if (started) {
-        timer = setInterval(next_experiment, 1000.0 / $("#i_per_s").spinner("value"));
+        var timesetting = 1000.0 / $("#i_per_s").spinner("value");
+        if (timesetting < 10) {
+
+            timer = setInterval(function () {
+                for (var i = 0; i < (10 / timesetting); i++) {
+                    next_experiment();
+                }
+            }, 10);
+        } else {
+
+            timer = setInterval(next_experiment, timesetting);
+        }
     }
 }
