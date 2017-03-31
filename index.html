@@ -8,17 +8,22 @@
     <link href="/jquery_ui/jquery-ui.css" rel="stylesheet">
     <script src="d3.js" type="text/javascript"></script>
     <script src="main.js" type="text/javascript"></script>
+    <script src="prob_tree.js" type="text/javascript"></script>
     <style>
         body {
             font-family: Arial;
         }
-        #d3_graph {
+
+        .d3_graph {
             width: 50%;
             /* whatever width you want */
             display: inline-block;
             position: relative;
         }
-        #d3_graph_svg {
+        .internal_node {
+            width: 200%;
+        }
+        .d3_svg{
             height: 100%;
             width: 200%;
             position: absolute;
@@ -27,40 +32,81 @@
             right: 0;
             left: 0;
         }
-        .bar{
-            fill:lightblue;
+        #d3_graph_svg {
+
         }
-        .tooltip{
-            fill:darkblue;
+
+        .bar {
+            fill: lightblue;
+        }
+
+        .tooltip {
+            fill: darkblue;
             font-size: 5vh;
             text-anchor: start;
         }
-        .tooltip2{
-              fill:darkblue;
-              font-size: 5vh;
-              text-anchor: end;
-          }
-        .total{
-            fill:black;
+
+        .tooltip2 {
+            fill: darkblue;
+            font-size: 5vh;
+            text-anchor: end;
+        }
+
+        .total {
+            fill: black;
             vertical-align: top;
             font-size: 5vh;
         }
-        #d3_graph:after {
+
+        .d3_graph:after {
             padding-top: 50%;
             display: block;
             content: '';
+        }
+        .add_text{
+            font-size: 3vh;
+            color:darkblue;
+        }
+        .prob_display{
+            font-size: 2vh;
+            color:darkblue;
+        }
+        .link {
+            fill: none;
+            stroke: #ccc;
+            stroke-width: 2px;
+        }
+        .prob_circle{
+            fill: darkred;
         }
     </style>
 </head>
 <body>
 <h1>D3 Visualisation of a Large Numbers Experiment</h1>
-<div id="d3_graph">
-    <svg id="d3_graph_svg"></svg>
-</div><br/>
-<label for="possibilities">Anzahl der Möglichkeiten:</label><input type="spinner" id="possibilities" min="0"
-                                                                   class="spinner" value="6"><br/>
-<label for="i_per_s">Experimente pro Sekunde</label><input id="i_per_s" type="spinner" min="0" class="spinner" value="10"><br/>
-<button id="start_timer">Start</button>
-<button id="stop_timer">Stop</button>
+<div>
+    <h2>Probality Tree</h2>
+    <div class="d3_graph">
+        <svg id="tree" class="d3_svg" viewBox="0 0 1000 400"></svg>
+    </div><br/>
+    <label for="i_per_s_tree">Experimente pro Sekunde</label><input id="i_per_s_tree" type="spinner" min="0" class="spinner"
+                                                               value="10"><br/>
+    <button id="start_timer_tree">Start</button>
+    <button id="stop_timer_tree">Stop</button>
+    <button id="reset_tree">Reset</button>
+</div>
+<div>
+    <h2>Simple possibilities</h2>
+    <div class="d3_graph">
+        <svg id="d3_graph_svg" class="d3_svg"></svg>
+    </div>
+    <br/>
+    <label for="possibilities">Anzahl der Möglichkeiten:</label><input type="spinner" id="possibilities" min="0"
+                                                                       class="spinner" value="6"><br/>
+    <label for="i_per_s">Experimente pro Sekunde</label><input id="i_per_s" type="spinner" min="0" class="spinner"
+                                                               value="10"><br/>
+    <button id="start_timer">Start</button>
+    <button id="stop_timer">Stop</button>
+    <button id="reset">Reset</button>
+</div>
 </body>
 </html>

@@ -29,6 +29,14 @@ function build() {
         started = false;
         startSpinner();
     });
+    $("#reset").on("click", function () {
+        for(var i=0; i<results.length; i++){
+            results[i].count=0;
+        }
+        started = false;
+        startSpinner();
+        updateGraph();
+    });
 }
 $("body").ready(function () {
     build();
